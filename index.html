@@ -133,17 +133,19 @@
     let food = parseFloat(document.getElementById("foodAmount").value);
     let tax = parseFloat(document.getElementById("taxAmount").value);
 
-    let total = food + tax;
-    let discount = 0, extra = 0;
+   let total = food + tax;
+let discount = 0;
+let extra = 0; // No extra charge
 
-    if (total >= 299) {
-      discount = 125;
-    } else if (total >= 199) {
-      discount = 90;
-      extra = 15;
-    }
+if (total >= 299) {
+  discount = 170;
+} else if (total >= 249) {
+  discount = 150;
+} else if (total >= 199) {
+  discount = 110;
+}
 
-    let finalAmount = total - discount + extra;
+let finalAmount = total - discount + extra;
 
     document.getElementById("resultText").innerText =
       `Total: ₹${total}, Discount: ₹${discount}, Extra: ₹${extra}, Final: ₹${finalAmount}`;
