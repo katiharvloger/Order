@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Swiggy Order Assistant</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #fff5e6;
+      color: #333;
+    }
+    .container {
+      max-width: 100%;
+      padding: 20px;
+      text-align: center;
+    }
+    .header {
+      background: linear-gradient(135deg, #ff6b00, #ff9500);
+      color: white;
+      padding: 25px 0;
+      border-radius: 0 0 20px 20px;
+      box-shadow: 0 4px 12px rgba(255,107,0,0.2);
+    }
+    .logo {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 15px;
+    }
+    h1 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 700;
+    }
+    .tagline {
+      font-size: 16px;
+      opacity: 0.9;
+      margin-top: 5px;
+    }
+    .intro-card {
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      margin: 20px auto;
+      max-width: 500px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+    .features {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      margin: 25px 0;
+    }
+    .feature {
+      background: white;
+      border-radius: 12px;
+      padding: 15px;
+      width: 120px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+    .feature-icon {
+      font-size: 30px;
+      margin-bottom: 10px;
+      color: #ff6b00;
+    }
+    .feature-text {
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .cta-button {
+      background: linear-gradient(135deg, #ff6b00, #ff9500);
+      color: white;
+      border: none;
+      padding: 14px 30px;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(255,107,0,0.3);
+      margin-top: 15px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .cta-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(255,107,0,0.4);
+    }
+    .demo-image {
+      width: 100%;
+      max-width: 300px;
+      border-radius: 12px;
+      margin: 20px auto;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      border: 1px solid #eee;
+    }
+    .lang-toggle {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: rgba(255,255,255,0.9);
+      color: #ff6b00;
+      padding: 8px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid #ff6b00;
+    }
+    .hidden { display: none; }
+    .step { 
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      margin: 20px auto;
+      max-width: 500px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+    button {
+      padding: 10px 15px;
+      margin: 5px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      background: #ff6b00;
+      color: white;
+      font-weight: 600;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      margin-bottom: 15px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+    }
+    .error {
+      color: red;
+      font-size: 14px;
+      display: none;
+      margin-bottom: 15px;
+    }
+    .reset-btn { background: #e74c3c; }
+    .order-id { 
+      background: #2ecc71;
+      color: white;
+      padding: 8px 15px;
+      border-radius: 20px;
+      margin-bottom: 15px;
+      display: inline-block;
+      font-weight: 600;
+    }
+    .instructions {
+      background: #fffbe6;
+      padding: 15px;
+      border-radius: 10px;
+      border: 1px solid #ffd700;
+      margin: 15px 0;
+      text-align: left;
+    }
+    .instructions li {
+      margin-bottom: 8px;
+    }
+    
+    /* NEW STYLES ADDED HERE */
+    .final-amount {
+      background: #2ecc71;
+      color: white;
+      padding: 12px;
+      border-radius: 8px;
+      margin: 15px 0;
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+      box-shadow: 0 4px 8px rgba(46, 204, 113, 0.3);
+    }
+    .button-group {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+    /* END OF NEW STYLES */
+  </style>
+</head>
+<body>
+  <button class="lang-toggle" onclick="toggleLanguage()">हिंदी</button>
+
+  <!-- Intro Page -->
+  <div id="introPage" class="container">
+    <div class="header">
+      <img src="https://i.ibb.co/5KqYp6J/swiggy-logo.png" alt="Swiggy Logo" class="logo">
+      <h1 id="mainTitle">Swiggy Order Assistant</h1>
+      <div class="tagline" id="mainTagline">Smart ordering with maximum discounts!</div>
+    </div>
+
+    <div class="intro-card">
+      <h2 id="welcomeTitle">Welcome to Your Order Assistant</h2>
+      <p id="introText">Get the best deals on your Swiggy orders with automatic discount calculations and easy order submission.</p>
+      
+      
+      <div class="features">
+        <div class="feature">
+          <div class="feature-icon">💰</div>
+          <div class="feature-text" id="feature1">Auto Discounts</div>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">⚡</div>
+          <div class="feature-text" id="feature2">Fast Setup</div>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">📱</div>
+          <div class="feature-text" id="feature3">Easy Upload</div>
+        </div>
+      </div>
+
+      <button class="cta-button" onclick="startOrder()" id="ctaButton">Start Order Now</button>
+    </div>
+  </div>
+
+  <!-- Order Flow (hidden initially) -->
+  <div id="orderFlow" class="hidden">
+    <div id="landing" class="step">
+      <h2 id="title"> Swiggy Order Assistant</h2>
+      <p id="instructions">Click the button below to start your order.</p>
+
+      <img src="https://i.ibb.co/GvdwqBgR/IMG-20250409-100556.jpg" alt="Example" class="demo-image" />
+      <div class="instructions">
+        <ul id="instructionList">
+          <li>Enter your food amount</li>
+          <li>Enter restaurant tax and GST and platform fee if applicable (gst + platform fee ek sath jor ke dale)</li>
+          <li>Distance enter kare Km me</li>
+        </ul>
+      </div>
+
+      <button onclick="showStep(1)">Get Started</button>
+    </div>
+
+    <div id="step1" class="step hidden">
+      <label id="label1">Enter Food Amount (₹):</label>
+      <input type="number" id="foodAmount"/>
+      <div class="error" id="amountError">Minimum order value is ₹199</div>
+      <button onclick="nextStep(2)">Next</button>
+    </div>
+
+    <div id="step2" class="step hidden">
+      <label id="label2">Enter Tax + GST (₹):</label>
+      <input type="number" id="taxAmount"/>
+      <button onclick="prevStep(1)">Back</button>
+      <button onclick="nextStep(3)">Next</button>
+    </div>
+
+    <div id="step3" class="step hidden">
+      <label id="label3">Enter Delivery Distance (km):</label>
+      <input type="number" id="distance"/>
+      <div class="error" id="distanceError">Free delivery only up to 7 km</div>
+      <button onclick="prevStep(2)">Back</button>
+      <button onclick="calculate()">Calculate</button>
+    </div>
+
+    <!-- MODIFIED SUMMARY DIV HERE -->
+    <div id="summary" class="step hidden">
+      <div id="resultText" class="final-amount"></div>
+      <label><strong>Cart Screenshot (required):</strong></label>
+      <input type="file" id="screenshot" accept="image/*"/>
+      <label><strong>Swiggy Address Link:</strong></label>
+      <input type="text" id="addressLink" placeholder="Paste from Swiggy app"/>
+      
+      <div class="button-group">
+        <button class="reset-btn" onclick="resetCart()">Reset Cart</button>
+        <button onclick="sendToSeller()">Submit Order</button>
+      </div>
+    </div>
+
+    <div id="finalMsg" class="step hidden">
+      <div class="order-id">Your Order ID: <span id="finalOrderId"></span></div>
+      <h3>✅ Your Order is in Review</h3>
+      <p>Discounts change often. Please confirm with the seller.</p>
+      <a href="https://t.me/katiharvloger2" target="_blank" style="color: #0088cc; font-weight: bold;">
+        <img src="https://telegram.org/img/t_logo.png" height="20" style="vertical-align: middle; margin-right: 5px;"/>
+        Contact Seller @katiharvloger2
+      </a>
+    </div>
+  </div>
+
+  <script>
+    let tg = window.Telegram.WebApp;
+    tg.expand();
+    let user = tg.initDataUnsafe?.user || {};
+    let language = "en";
+    let orderCount = localStorage.getItem(`orderCount_${user.id}`) || 0;
+    let currentOrderId = "";
+
+    // Initialize language
+    updateContent();
+
+    function toggleLanguage() {
+      language = language === "en" ? "hi" : "en";
+      updateContent();
+    }
+    
+    function updateContent() {
+      if (language === "hi") {
+        // Intro page
+        document.querySelector(".lang-toggle").innerText = "EN";
+        document.getElementById("mainTitle").innerText = "स्विगी ऑर्डर सहायक";
+        document.getElementById("mainTagline").innerText = "अधिकतम छूट के साथ स्मार्ट ऑर्डरिंग!";
+        document.getElementById("welcomeTitle").innerText = "आपके ऑर्डर सहायक में स्वागत है";
+        document.getElementById("introText").innerText = "स्वचालित छूट गणना और आसान ऑर्डर सबमिशन के साथ अपने स्विगी ऑर्डर पर सर्वोत्तम सौदे प्राप्त करें।";
+        document.getElementById("feature1").innerText = "ऑटो छूट";
+        document.getElementById("feature2").innerText = "त्वरित सेटअप";
+        document.getElementById("feature3").innerText = "आसान अपलोड";
+        document.getElementById("ctaButton").innerText = "अभी ऑर्डर शुरू करें";
+        
+        // Order flow
+        document.getElementById("title").innerText = "स्विगी ऑर्डर सहायक";
+        document.getElementById("instructions").innerText = "अपना ऑर्डर शुरू करने के लिए नीचे दिए गए बटन पर क्लिक करें।";
+        document.getElementById("instructionList").innerHTML = `
+          <li>भोजन राशि दर्ज करें</li>
+          <li>रेस्टोरेंट टैक्स और जीएसटी और प्लेटफॉर्म फी दर्ज करें (यदि लागू हो)</li>
+          <li>डिलीवरी दूरी किलोमीटर में दर्ज करें</li>
+        `;
+        document.getElementById("label1").innerText = "भोजन राशि दर्ज करें (₹):";
+        document.getElementById("label2").innerText = "कर + जीएसटी दर्ज करें (₹):";
+        document.getElementById("label3").innerText = "डिलीवरी दूरी दर्ज करें (कि.मी.):";
+        document.getElementById("amountError").innerText = "न्यूनतम ऑर्डर मूल्य ₹199 है";
+        document.getElementById("distanceError").innerText = "केवल 7 किमी तक मुफ्त डिलीवरी";
+      } else {
+        // Intro page
+        document.querySelector(".lang-toggle").innerText = "हिंदी";
+        document.getElementById("mainTitle").innerText = "Swiggy Order Assistant";
+        document.getElementById("mainTagline").innerText = "Smart ordering with maximum discounts!";
+        document.getElementById("welcomeTitle").innerText = "Welcome to Your Order Assistant";
+        document.getElementById("introText").innerText = "Get the best deals on your Swiggy orders with automatic discount calculations and easy order submission.";
+        document.getElementById("feature1").innerText = "Auto Discounts";
+        document.getElementById("feature2").innerText = "Fast Setup";
+        document.getElementById("feature3").innerText = "Easy Upload";
+        document.getElementById("ctaButton").innerText = "Start Order Now";
+        
+        // Order flow
+        document.getElementById("title").innerText = "Swiggy Order Assistant";
+        document.getElementById("instructions").innerText = "Click the button below to start your order.";
+        document.getElementById("instructionList").innerHTML = `
+          <li>Enter your food amount</li>
+          <li>Enter restaurant tax and GST and platform fee if applicable (gst + platform fee ek sath jor ke dale)</li>
+          <li>Distance enter kare Km me</li>
+        `;
+        document.getElementById("label1").innerText = "Enter Food Amount (₹):";
+        document.getElementById("label2").innerText = "Enter Tax + GST (₹):";
+        document.getElementById("label3").innerText = "Enter Delivery Distance (km):";
+        document.getElementById("amountError").innerText = "Minimum order value is ₹199";
+        document.getElementById("distanceError").innerText = "Free delivery only up to 7 km";
+      }
+    }
+
+    function startOrder() {
+      document.getElementById("introPage").classList.add("hidden");
+      document.getElementById("orderFlow").classList.remove("hidden");
+    }
+
+    // Generate order ID in format U123-1, U123-2 etc.
+    function generateOrderId() {
+      orderCount++;
+      localStorage.setItem(`orderCount_${user.id}`, orderCount);
+      currentOrderId = `U${user.id}-${orderCount}`;
+      return currentOrderId;
+    }
+
+    function showStep(step) {
+      document.getElementById("landing").classList.add("hidden");
+      document.getElementById("step" + step).classList.remove("hidden");
+    }
+
+    function nextStep(step) {
+      if (step === 2) {
+        const foodAmount = parseFloat(document.getElementById("foodAmount").value);
+        if (isNaN(foodAmount) || foodAmount < 199) {
+          document.getElementById("amountError").style.display = "block";
+          return;
+        } else {
+          document.getElementById("amountError").style.display = "none";
+        }
+      }
+      document.querySelectorAll('.step').forEach(e => e.classList.add('hidden'));
+      document.getElementById("step" + step).classList.remove("hidden");
+    }
+
+    function prevStep(step) {
+      nextStep(step);
+    }
+
+    // MODIFIED CALCULATE FUNCTION HERE
+    function calculate() {
+      const distance = parseFloat(document.getElementById("distance").value);
+      if (isNaN(distance) || distance > 7) {
+        document.getElementById("distanceError").style.display = "block";
+        return;
+      } else {
+        document.getElementById("distanceError").style.display = "none";
+      }
+
+      let food = parseFloat(document.getElementById("foodAmount").value);
+      let tax = parseFloat(document.getElementById("taxAmount").value);
+
+      let total = food + tax;
+      let discount = 0;
+      let extra = 0;
+
+      if (total >= 299) {
+        discount = 120;
+      } else if (total >= 249) {
+        discount = 120;
+      } else if (total >= 199) {
+        discount = 120;
+      }
+
+      let finalAmount = total - discount + extra;
+
+      document.getElementById("resultText").innerHTML = language === "en" ?
+        `Total: ₹${total}<br>Discount: ₹${discount}<br><span style="font-size:22px;">Final Amount: ₹${finalAmount}</span>` :
+        `कुल: ₹${total}<br>छूट: ₹${discount}<br><span style="font-size:22px;">अंतिम राशि: ₹${finalAmount}</span>`;
+
+      document.querySelectorAll('.step').forEach(e => e.classList.add('hidden'));
+      document.getElementById("summary").classList.remove("hidden");
+    }
+
+    function resetCart() {
+      document.getElementById("foodAmount").value = "";
+      document.getElementById("taxAmount").value = "";
+      document.getElementById("distance").value = "";
+      document.getElementById("screenshot").value = "";
+      document.getElementById("addressLink").value = "";
+      document.querySelectorAll('.step').forEach(e => e.classList.add('hidden'));
+      document.getElementById("landing").classList.remove("hidden");
+    }
+
+    async function sendToSeller() {
+      const food = document.getElementById("foodAmount").value;
+      const tax = document.getElementById("taxAmount").value;
+      const distance = document.getElementById("distance").value;
+      const address = document.getElementById("addressLink").value;
+      const screenshot = document.getElementById("screenshot").files[0];
+      if (!screenshot || !address) {
+        alert(language === "en" ? "Please upload screenshot and address link" : "कृपया स्क्रीनशॉट और पता लिंक अपलोड करें");
+        return;
+      }
+
+      // Generate order ID only at final submission
+      const orderId = generateOrderId();
+      document.getElementById("finalOrderId").textContent = orderId;
+
+      const msg = `🛒 *New Swiggy Order:*\n\n👤 *User:* @${user.username}\n🆔 *User ID:* ${user.id}\n📋 *Order ID:* ${orderId}\n\n🍔 *Amount:* ₹${food}\n🧾 *Tax:* ₹${tax}\n📍 *Distance:* ${distance} km\n🔗 *Swiggy Address:* ${address}`;
+
+      try {
+        await fetch(`https://api.telegram.org/bot7069586996:AAG5A-LLSWaQrLQ9EqM8_JihaQI3I90bFik/sendMessage`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ chat_id: "7241783674", text: msg, parse_mode: "Markdown" })
+        });
+
+        const formData = new FormData();
+        formData.append("chat_id", "7241783674");
+        formData.append("photo", screenshot);
+        formData.append("caption", `Order ID: ${currentOrderId}`);
+
+        await fetch(`https://api.telegram.org/bot7069586996:AAG5A-LLSWaQrLQ9EqM8_JihaQI3I90bFik/sendPhoto`, {
+          method: "POST",
+          body: formData
+        });
+
+        document.querySelectorAll(".step").forEach(e => e.classList.add("hidden"));
+        document.getElementById("finalMsg").classList.remove("hidden");
+      } catch (err) {
+        alert(language === "en" ? "Failed to send order. Please try again." : "ऑर्डर भेजने में विफल। कृपया पुनः प्रयास करें।");
+        console.error("Telegram API error:", err);
+      }
+    }
+  </script>
+</body>
+</html>
