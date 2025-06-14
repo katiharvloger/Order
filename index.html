@@ -165,7 +165,6 @@
       margin-bottom: 8px;
     }
     
-    /* NEW STYLES ADDED HERE */
     .final-amount {
       background: #2ecc71;
       color: white;
@@ -182,7 +181,13 @@
       justify-content: space-between;
       margin-top: 20px;
     }
-    /* END OF NEW STYLES */
+    /* Style for ad container */
+    #ad-container {
+      margin: 20px auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
   </style>
 </head>
 <body>
@@ -260,7 +265,6 @@
       <button onclick="calculate()">Calculate</button>
     </div>
 
-    <!-- MODIFIED SUMMARY DIV HERE -->
     <div id="summary" class="step hidden">
       <div id="resultText" class="final-amount"></div>
       <label><strong>Cart Screenshot (required):</strong></label>
@@ -268,6 +272,21 @@
       <label><strong>Swiggy Address Link:</strong></label>
       <input type="text" id="addressLink" placeholder="Paste from Swiggy app"/>
       
+      <!-- AD SCRIPT PLACED HERE -->
+      <div id="ad-container">
+        <script type="text/javascript">
+          atOptions = {
+            'key' : 'f64c87e5062356a3b0c068e8779add06',
+            'format' : 'iframe',
+            'height' : 50,
+            'width' : 320,
+            'params' : {}
+          };
+        </script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/f64c87e5062356a3b0c068e8779add06/invoke.js"></script>
+      </div>
+      <!-- END OF AD SCRIPT -->
+
       <div class="button-group">
         <button class="reset-btn" onclick="resetCart()">Reset Cart</button>
         <button onclick="sendToSeller()">Submit Order</button>
@@ -391,7 +410,6 @@
       nextStep(step);
     }
 
-    // MODIFIED CALCULATE FUNCTION HERE
     function calculate() {
       const distance = parseFloat(document.getElementById("distance").value);
       if (isNaN(distance) || distance > 7) {
