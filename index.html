@@ -260,7 +260,7 @@
     <div id="step3" class="step hidden">
       <label id="label3">Enter Delivery Distance (km):</label>
       <input type="number" id="distance"/>
-      <div class="error" id="distanceError">Free delivery only up to 7 km</div>
+      <div class="error" id="distanceError">Free delivery only up to 5 km</div>
       <button onclick="prevStep(2)">Back</button>
       <button onclick="calculate()">Calculate</button>
     </div>
@@ -412,7 +412,7 @@
 
     function calculate() {
       const distance = parseFloat(document.getElementById("distance").value);
-      if (isNaN(distance) || distance > 7) {
+      if (isNaN(distance) || distance > 5) {
         document.getElementById("distanceError").style.display = "block";
         return;
       } else {
@@ -427,11 +427,11 @@
       let extra = 0;
 
       if (total >= 499) {
-        discount = 160;
+        discount = 100;
       } else if (total >= 249) {
-        discount = 130;
+        discount = 100;
       } else if (total >= 199) {
-        discount = 130;
+        discount = 100;
       }
 
       let finalAmount = total - discount + extra;
